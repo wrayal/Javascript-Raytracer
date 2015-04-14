@@ -1,0 +1,184 @@
+
+<style type="text/css">
+body {
+background:#000;
+color:#AAA
+}
+pre {
+font-family:"courier new";
+font-size:1px;
+line-height:1px
+}
+</style>
+<div id="rd"></div><p>
+<input type=button value="Trace!" onClick=traceCall()>
+<form name="f">
+<textarea name=text rows=8 cols=40></textarea><p>
+Cam:<input name=x value=6 size=3>,<input name=y value=-7 size=3>,<input name=z value=-8 size=3><p>
+Res:<input name=size value=40 size=10><p>
+Light Pos:<input name=lx value=-7 size=3>,<input name=ly value=-8 size=3>,<input name=lz value=-10 size=3> Col:<input name=lcolour value="1,1,1" size=3><p>
+Checker Col 1:<input name=checka value="1,1,1" size=3> 2:<input name=checkb value="0,0,0" size=5>
+<script>
+var m=Math
+var spa=[("-2,0,-1.732"),"1","1","0.5,0.25,0.25",10,0.6,"sphere"]
+var spb=[("2,0,-1.732"),"1","1","0.25,0.5,0.25",10,0.6,"sphere"]
+var spc=[("0,0,1.732"),"1","1","0.25,0.25,0.5",10,0.6,"sphere"]
+var pe=[true,"1","0.3","0,0,1",10,0.2,"plane",("0,-1,0")]
+var sA=[spa,spb,spc,pe],lga=["",""]
+var lgb=["4,-5,-16","0.1,0.2,0.8"],lA=[lga,lgb],IW=IH=x=cd=0,cs=0.5,aL="0,0,0",j="0.1,0.1,0.1",oA=sA.length,doc=document,ge=doc.forms['f'],gf=ge.text.value
+function mLVs(c,d) {
+a=spV(c)
+b=spV(d)
+return a[0]*b[0]+","+a[1]*b[1]+","+a[2]*b[2]}
+function addLVs(c,d) {
+ta=spV(c)
+tb=spV(d)
+return (ta[0]*1+tb[0]*1)+","+(ta[1]*1+tb[1]*1)+","+(ta[2]*1+tb[2]*1)}
+function mLV(l,m) {
+ta=spV(l)
+return cV((ta[0]*m),(ta[1]*m),(ta[2]*m))}
+function cV(x,y,z) {return (x+","+y+","+z)}
+function spV(v) {return v.split(",")}
+function w(a,b) {
+a=spV(a)
+b=spV(b)
+return (a[0]*b[0]+a[1]*b[1]+a[2]*b[2])}
+function vle(v) {
+return m.sqrt(w(v,v))}
+function sV(a,b) {
+a=spV(a)
+b=spV(b)
+return cV((a[0]-b[0]),(a[1]-b[1]),(a[2]-b[2]))}
+function nV(v) {
+return dV(v,(vle(v)))}
+function dV(c,b) {
+a=spV(c)
+return cV((a[0]/b),(a[1]/b),(a[2]/b))}
+function sphereI(p,d,g) {
+v=sV(p,sA[g][0])
+r=sA[g][1]
+dv=w(d,v)
+dd=w(d,d)
+sq=dv*dv-dd*(w(v,v)-r*r)
+if (sq<0) {
+re=-1}
+else {
+sq=m.sqrt(sq)
+var y=(-dv+sq)/dd,z=(-dv-sq)/dd
+if (y>z) re=z
+else re=y
+}
+return re
+}
+function trace(p,d,rc) {
+var s="",cs=oA,e=0
+minT=1000000
+while (e<oA) {
+t=eval(sA[e][6]+"I(p,d,e)")
+if (t>0 && t<minT) {
+minT=t
+cs=e}
+e++}
+if (cs==oA) s=j
+else {
+ip=addLVs(p,(mLV(d,minT)))
+r=sA[cs][1]
+if (sA[cs][6]=="sphere") {o=mLV((sV(ip,sA[cs][0])),(1/r))}
+if (sA[cs][6]=="plane") {
+o=sA[cs][7]
+if (o=="0,1,0" || o=="0,-1,0") {
+if (sA[cs][cd]==true) {
+cn=m.floor(spV(ip)[2])+m.floor(spV(ip)[x])
+if (cn/2==m.floor(cn/2)) sA[cs][3]=cca
+else sA[cs][3]=ccb}}}
+g=sV(p,ip)
+q=sV(mLV(o,(w(o,g)*2)),g)
+s=aL
+e=0
+while (e<lA.length) {
+var l=lA[e][0]
+l=nV(l)
+sh="a"
+var Ib=0
+while (Ib<oA) {
+if (Ib!=cs && eval(sA[Ib][6]+"I(ip,l,Ib)")>0) {
+sh=""
+Ib=oA}Ib++}
+if (sh=="a") {
+if (sA[cs][6]!="plane") k=w(o,l)
+else k=w(o,nV(sV(l,ip)))
+if (k>0) {
+s=addLVs(mLV(mLVs(lA[e][1],sA[cs][3]),k),s)
+k=w((nV(q)),l)
+if (k>0) {
+s=addLVs(mLV(lA[e][1],((m.pow(k,(sA[cs][4])))*sA[cs][5])),s)}}}
+if (rc<10 && sA[cs][2]>0) {
+s=addLVs((mLV((trace(ip,q,rc+1)),sA[cs][2])),s)}e++}}
+return s}
+function h(a,b) {return (cV((spV(a)[1]*spV(b)[2]-spV(a)[2]*spV(b)[1]),(spV(a)[2]*spV(b)[x]-spV(a)[x]*spV(b)[2]),(spV(a)[x]*spV(b)[1]-spV(a)[1]*spV(b)[x])))}
+function Hx(n) {
+if ((n*=255)>255) n=255
+a=m.floor(n/16)
+b=m.floor(n-(a*16))
+return hC(a,"to")+""+hC(b,"to")}
+function hC(inp,w) {
+if (inp<10) r=inp
+else {
+if (w=="to") r=String.fromCharCode(inp+87)
+if (w=="from") {
+r=inp.charCodeAt(0)-87}}
+return r}
+function fh(b) {
+cA=spV(b)
+return "#"+Hx(cA[0])+""+Hx(cA[1])+""+Hx(cA[2])}
+function  traceCall() {
+window.status="running"
+var b=false
+if (navigator.userAgent.indexOf('MSIE')!=-1) b=true
+al=ge.size.value=m.ceil(ge.size.value/4)*4
+var cm=cV(ge.x.value,ge.y.value,ge.z.value)
+IW=IH=al
+lA[0][0]=cV(ge.lx.value,ge.ly.value,ge.lz.value)
+lA[0][1]=ge.lcolour.value
+cca=ge.checka.value
+ccb=ge.checkb.value
+var cdir=nV((mLV(cm,-1))),cr=nV(h("0,-1,0",cdir)),cd=nV(h(cr,cdir))
+if (b) gf='<PRE id=display>'
+for (var IY=0; IY<IW; IY++) {
+for (var IX=0; IX<IW; IX++) {
+CX=(((IX)/(IW-1)-.5)*2)*IW/IH
+CY=(IY)/(IH-1)*2-1
+window.status=(100*(IY*IH+IX+1)/(IW*IH))+"%"
+var r=mLV(cr,CX),d=mLV(cd,CY),tot=addLVs(addLVs(mLV(cdir,3),r),d)
+if (b) gf+='<span style="background:'+fh(trace(cm,tot,1)) + '"> </span>'
+else ge.text.value+=fh(trace(cm,tot,1))}
+if (b) gf+='<br>'}
+if (b) gf+="</pre>"
+window.status="done"
+tt(b)}
+function tt(r) {if (r) doc.getElementById('rd').innerHTML=gf
+else {input=ge.text.value.split("")
+var bt=bs=""
+for (var i=0; i<input.length; i++) if (input[i]!="#") bt+=input[i]
+bt=bt.split("")
+for (var i=bt.length-1; i>=0; i-=2) bs+=bt[i-1]+""+bt[i]+" "
+var mf="42 4D 00 00 00 00 00 00 00 00 36 00 00 00 28 00 00 00 "+(jkl=Hx(ge.size.value/255))+" 00 00 00 "+(jkl)+" 00 00 00 01 00 18 "
+for (k=0;k<25;k++) mf+="00 "
+mf+=bs
+ff(mf.split(""))}}
+function ff(it) {
+var ot=""
+for (var i=0; i<it.length; i++) {ot+=(it[i].toUpperCase())}
+vl(ot)}
+function vl(input) {
+var ny=input.split(" "),rk="data:image/bmp;charset=iso-8859-7,"
+for (var i=0; i<ny.length-1; i++) rk+=("%"+ny[i])
+rpt="<img src='"+rk+"' />"
+ph=doc.getElementById( "rd" )
+ph.innerHTML+=rpt}
+function planeI(cm,d,g) {
+n=sA[g][7]
+if (w(d,n)==0) return [-1]
+b=w(n,addLVs(cm,mLV(n,sA[g][1])))
+return -b/(w(d,n))}
+</script>
